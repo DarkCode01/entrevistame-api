@@ -5,8 +5,19 @@ defmodule EntrevistameApiWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :browser do
+    plug Ueberauth
+  end
+
   scope "/api", EntrevistameApiWeb do
     pipe_through :api
+
+    scope "/auth" do
+      pipe_through :browser
+
+      get "/:provider", AuthController, :request
+      get "/:provider/callback", AuthController, :callback
+    end
   end
 
   # Enables LiveDashboard only for development
